@@ -16,10 +16,11 @@ const MainPage = () => {
       </div>
     );
   }
+
   if (error) {
     return <div className="spinner">Ürünler yüklenirken bir hata oluştu</div>;
-  }
-
+  }  
+  
   //sepete ekleme
   const handleAddToBasket = (product: ProductType) => {
     dispatch(addToBasket(product));
@@ -32,7 +33,7 @@ const MainPage = () => {
     <div className="mt-5">
       <Container className="my-4">
         <Row xs={1} md={2} lg={3} xl={4}>
-          {data?.products.map((product) => (
+          {data?.products.map((product:ProductType) => (
             <Col key={product?.id} className="mb-4">
               <Card className="text-center card">
                 <Card.Img
@@ -64,7 +65,7 @@ const MainPage = () => {
                     onClick={() => handleAddToBasket(product)}
                     variant="primary"
                   >
-                    Sepete Ekle
+                  Sepete Ekle
                   </Button>
                 </Card.Body>
               </Card>

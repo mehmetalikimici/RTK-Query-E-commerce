@@ -34,9 +34,26 @@ export const basketSlice = createSlice({
     clearBasket: (state) => {
       state.products = [];
     },
+
+    incrementItem:(state,action:PayloadAction<number>) => {
+      const productId = action.payload;
+      const updated = state.products.find((i) => i.id === productId) 
+
+      if(updated && updated.amount !== undefined){
+        updated.amount += 1
+      }
+    },
+    decrementItem:(state,action:PayloadAction<number>) => {
+      const productId = action.payload;
+      const updated = state.products.find((i) => i.id === productId) 
+
+      if(updated && updated.amount !== undefined){
+        updated.amount -= 1
+      }
+    },
   },
 });
 
-export const { addToBasket, removeFromBasket, clearBasket } =
+export const { addToBasket, removeFromBasket, clearBasket, incrementItem, decrementItem } =
   basketSlice.actions;
 export default basketSlice.reducer;

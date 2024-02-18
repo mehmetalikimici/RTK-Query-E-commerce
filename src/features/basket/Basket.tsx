@@ -2,8 +2,13 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { ListGroup } from 'react-bootstrap';
-import { clearBasket, removeFromBasket } from './basketSlice';
+import { ButtonGroup, ListGroup } from 'react-bootstrap';
+import {
+  clearBasket,
+  decrementItem,
+  incrementItem,
+  removeFromBasket,
+} from './basketSlice';
 import { ProductType } from '../../types';
 import { toast } from 'react-toastify';
 
@@ -18,7 +23,7 @@ function Basket() {
   );
 
   //toplam fiyatı hesaplama
-  const getTotalPrice = () => {
+  const getTotalPrice = (): string => {
     return products
       .reduce((total, item) => total + item.price * item.amount!, 0)
       .toFixed(2);
@@ -44,8 +49,23 @@ function Basket() {
     toast.info('Alışveriş tamamlandı !');
   };
 
+  //ürün adedini arttırma
+  const handleIncrement = (id: number) => {
+    dispatch(incrementItem(id));
+  };
+
+  const handleDecrement = (id: number) => {
+    dispatch(decrementItem(id));
+
+    // Ürün miktarı 0'a düştüğünde sepetten kaldır
+    const deleted = products.find((product) => product.id === id);
+    if (deleted && deleted.amount === 1) {
+      handleRemoveFromBasket(deleted);
+    }
+  };
+
   //modal'ın açılıp kapanması için tutulan state
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState<boolean>(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -87,13 +107,29 @@ function Basket() {
                   />
                   {product.title} - Miktar: {product.amount}
                 </div>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => handleRemoveFromBasket(product)}
-                >
-                  Sil
-                </Button>
+                <ButtonGroup>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => handleIncrement(product.id)}
+                  >
+                    +
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => handleDecrement(product.id)}
+                  >
+                    -
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => handleRemoveFromBasket(product)}
+                  >
+                    Sil
+                  </Button>
+                </ButtonGroup>
               </ListGroup.Item>
             ))}
           </ListGroup>
