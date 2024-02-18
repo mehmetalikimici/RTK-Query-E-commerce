@@ -4,3 +4,5 @@
 - react-router-dom
 - react-bootstrap
 - bootstrap
+- toastify
+- redux-toolkit-query
